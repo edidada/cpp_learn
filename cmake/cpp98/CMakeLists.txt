@@ -3,4 +3,4 @@ project(cpp_learn)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(myset_b_tree src/myset_b_tree.cpp)
+add_executable(myset_b_tree ${CMAKE_SOURCE_DIR}/src/myset_b_tree.cpp)
