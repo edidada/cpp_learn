@@ -17,7 +17,8 @@ private:
     // 递归插入新元素
     bool insertHelper(std::unique_ptr<Node>& node, const T& value) {
         if (!node) {
-            node = std::make_unique<Node>(value);
+            node = std::unique_ptr<Node>(new Node(value));
+//            node = std::make_unique<Node>(value);
             return true;  // 新插入节点
         }
 
