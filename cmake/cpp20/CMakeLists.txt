@@ -12,3 +12,4 @@ add_executable(ModuleExample ${CMAKE_SOURCE_DIR}/src/cpp20/main.cpp ${CMAKE_SOUR
 # 但 Visual Studio 可能会通过其项目系统自动处理这些。
 # 对于 GCC/Clang，你可能需要添加如 `-fmodules-ts` 的标志。
 
+add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
