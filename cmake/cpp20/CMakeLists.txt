@@ -13,3 +13,4 @@ add_executable(ModuleExample ${CMAKE_SOURCE_DIR}/src/cpp20/main.cpp ${CMAKE_SOUR
 # 对于 GCC/Clang，你可能需要添加如 `-fmodules-ts` 的标志。
 
 add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
+add_executable(cpp20_coroutine2 ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine2.cpp)
