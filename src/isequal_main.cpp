@@ -1,6 +1,10 @@
 #include <iostream>
 #include <type_traits>
 
+namespace mystd {
+template <class T>
+using decay_t = typename std::decay<T>::type;
+}
 // 基本模板
 template <typename T, typename U>
 struct IsEqual {
@@ -32,7 +36,7 @@ struct IsEqual<double, double> {
 // 辅助函数：用于检查两个类型是否相等，并调用相应的IsEqual特化版本
 template <typename T, typename U>
 constexpr bool isEqual(T t, U u) {
-    return IsEqual<std::decay_t<T>, std::decay_t<U>>::value;
+    return IsEqual<mystd::decay_t<T>, mystd::decay_t<U>>::value;
 }
 
 int main() {

@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(cpp_learn)
 
-set(CMAKE_CXX_STANDARD 11)
-
-add_executable(myset_b_tree src/myset_b_tree.cpp)
-add_executable(virtual_main src/virtual_main.cpp)
-add_executable(simple_alloc_main src/simple_alloc_main.cpp)
-add_executable(singleton src/singleton.cpp)
-add_executable(my src/my.cpp)
-add_executable(constexpr_if src/constexpr_if.cpp)
+add_subdirectory(cmake/cpp11)
+add_subdirectory(cmake/cpp17)
+add_subdirectory(cmake/cpp20)
+add_subdirectory(cmake/cpp23)
+add_subdirectory(cmake/cpp98)

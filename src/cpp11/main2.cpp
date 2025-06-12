@@ -1,0 +1,20 @@
+// main.cpp
+#include <iostream>
+#include "MyClass2.hpp"
+#include "MyClass2.inl" // 如果选择这种方式，则用户需要这样做
+// 如果你想在这里直接包含实现，可以这样做（但不推荐）
+// #include "MyClass.tpp"
+
+int main() {
+    MyClass<int> myInt;
+    myInt.add(5);
+    myInt.add(10);
+    std::cout << "The value is: " << myInt.getValue() << std::endl; // 输出: The value is: 15
+
+    MyClass<std::string> myString;
+    myString.add("Hello, ");
+    myString.add("World!");
+    std::cout << "The string is: " << myString.getValue() << std::endl; // 输出: The string is: Hello, World!
+
+    return 0;
+}
