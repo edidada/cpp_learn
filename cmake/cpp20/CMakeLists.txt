@@ -14,3 +14,4 @@ add_executable(ModuleExample ${CMAKE_SOURCE_DIR}/src/cpp20/main.cpp ${CMAKE_SOUR
 
 add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
 add_executable(cpp20_coroutine2 ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine2.cpp)
+add_executable(cpp20_concepts ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_concepts.cpp)
