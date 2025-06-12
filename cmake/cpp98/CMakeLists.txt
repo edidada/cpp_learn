@@ -12,4 +12,3 @@ endif()
 
 add_executable(cpp98_main ${CMAKE_SOURCE_DIR}/src/main.cpp ${CMAKE_SOURCE_DIR}/src/AA.cpp)
 add_executable(cpp98_NoThisFriendClass_main ${CMAKE_SOURCE_DIR}/src/NoThisFriendClass_main.cpp ${CMAKE_SOURCE_DIR}/src/NoThisFriendClass.cpp)
-
