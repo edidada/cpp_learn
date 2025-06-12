@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        osver: [15, 14]
+        osver: [14, 15]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
