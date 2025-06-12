@@ -1,0 +1,122 @@
+name: Build & Test cpp23 multi conpiler version
+
+on:
+  push:
+    branches: [cpp23]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  macos:
+    runs-on: macos-${{ matrix.osver }}
+    strategy:
+      fail-fast: false
+      matrix:
+        osver: [15, 14]
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: cp cmake
+        run: rm -rf CMakeLists.txt && cp ./cmake/cpp23/CMakeLists.txt .
+
+      - name: Create Build Environment & Configure Cmake
+        # Some projects don't allow in-source building, so create a separate build directory
+        # We'll use this as our working directory for all subsequent commands
+        run: |
+          cmake -B build -G Ninja          \
+            -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+  ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - cxx: g++
+            ver: 13
+          - cxx: g++
+            ver: 14
+          - cxx: clang++
+            ver: 15
+          - cxx: clang++
+            ver: 16
+          - cxx: clang++
+            ver: 17
+          - cxx: clang++
+            ver: 18
+          - cxx: clang++
+            ver: 19
+          - cxx: clang++
+            ver: 20
+    env:
+      CXX: ${{ matrix.compiler.cxx }}-${{ matrix.compiler.ver }}
+    steps:
+      - name: Checkout cpp_learn source code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Install Clang less 13
+        if: startsWith(matrix.compiler.cxx, 'clang') && matrix.compiler.ver < 13
+        run: sudo apt-get install clang-${{ matrix.compiler.ver }}
+
+      - name: Install Clang 13 abolve
+        if: startsWith(matrix.compiler.cxx, 'clang') && matrix.compiler.ver >= 13
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x ./llvm.sh
+          sudo ./llvm.sh ${{ matrix.compiler.ver }}
+
+      - name: Install g++ 13 abolve
+        if: startsWith(matrix.compiler.cxx, 'g++') && matrix.compiler.ver >= 13
+        run: |
+          echo "ppa:ubuntu-toolchain-r/test"
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          echo "apt update"
+          sudo apt update
+          echo "gcc-pin"
+          sudo cp ${{github.workspace}}/apt/gcc-pin /etc/apt/preferences.d/gcc-pin
+          cat /etc/apt/preferences.d/gcc-pin
+          echo "apt update"
+          sudo apt update
+          echo "apt-get install gcc"
+          sudo apt-get install gcc-${{ matrix.compiler.ver }} g++-${{ matrix.compiler.ver }}
+          echo "update-alternatives install"
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.compiler.ver }} 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.compiler.ver }} 100
+          echo "gcc version config"
+          sudo update-alternatives --config gcc
+          sudo update-alternatives --config g++
+          echo "gcc version"
+          gcc --version
+          g++ --version
+
+      - name: cp CMakeLists.txt
+        run: rm -rf CMakeLists.txt && cp ./cmake/cpp23/CMakeLists.txt .
+
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+

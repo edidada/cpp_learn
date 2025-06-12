@@ -1,16 +1,16 @@
 # This starter workflow is for a CMake project running on a single platform. There is a different starter workflow if you need cross-platform coverage.
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-multi-platform.yml
-name: CMake on a single platform
+name: cpp20 ubuntu
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "cpp20" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "cpp20" ]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  BUILD_TYPE: Debug
 
 jobs:
   build:
@@ -21,6 +21,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: cp cmake
+      run: rm -rf CMakeLists.txt && cp ./cmake/cpp20/CMakeLists.txt .
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
