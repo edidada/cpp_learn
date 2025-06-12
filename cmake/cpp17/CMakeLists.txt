@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.12)
+project(cpp17_learn)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+message(STATUS "Project Source Dir: ${PROJECT_SOURCE_DIR}")
+message(STATUS "CMake Source Dir: ${CMAKE_SOURCE_DIR}")
+add_executable(cpp17_optional ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_optional.cpp)
+add_executable(cpp17_filesystem ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_filesystem.cpp)
+add_executable(cpp17_tuple ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_tuple.cpp)
+add_executable(cpp17_arg ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_arg.cpp)
