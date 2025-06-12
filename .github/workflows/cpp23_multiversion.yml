@@ -64,6 +64,8 @@ jobs:
             ver: 18
           - cxx: clang++
             ver: 19
+          - cxx: clang++
+            ver: 20
     env:
       CXX: ${{ matrix.compiler.cxx }}-${{ matrix.compiler.ver }}
     steps:
@@ -88,7 +90,7 @@ jobs:
         if: startsWith(matrix.compiler.cxx, 'g++') && matrix.compiler.ver >= 13
         run: |
           sudo apt update
-          apt-get install g++-${{ matrix.compiler.ver }}
+          sudo apt-get install g++-${{ matrix.compiler.ver }}
 
       - name: cp CMakeLists.txt
         run: rm -rf CMakeLists.txt && cp ./cmake/cpp23/CMakeLists.txt .
