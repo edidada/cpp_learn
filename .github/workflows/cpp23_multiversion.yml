@@ -89,15 +89,24 @@ jobs:
       - name: Install g++ 13 abolve
         if: startsWith(matrix.compiler.cxx, 'g++') && matrix.compiler.ver >= 13
         run: |
+          echo "ppa:ubuntu-toolchain-r/test"
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          echo "apt update"
           sudo apt update
+          echo "gcc-pin"
           sudo cp ${{github.workspace}}/apt/gcc-pin /etc/apt/preferences.d/gcc-pin
+          cat /etc/apt/preferences.d/gcc-pin
+          echo "apt update"
           sudo apt update
+          echo "pt-get install gcc"
           sudo apt-get install gcc-${{ matrix.compiler.ver }} g++-${{ matrix.compiler.ver }}
+          echo "update-alternatives install"
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.compiler.ver }} 100
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.compiler.ver }} 100
+          echo "gcc version config"
           sudo update-alternatives --config gcc
           sudo update-alternatives --config g++
+          echo "gcc version"
           gcc --version
           g++ --version
 
