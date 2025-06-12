@@ -3,8 +3,6 @@ project(cpp17_learn)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-message(STATUS "Project Source Dir: ${PROJECT_SOURCE_DIR}")
-message(STATUS "CMake Source Dir: ${CMAKE_SOURCE_DIR}")
 add_executable(cpp17_fstream ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_fstream.cpp)
 add_executable(cpp17_ini ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_ini.cpp)
 add_executable(cpp17_variant ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_variant.cpp)
