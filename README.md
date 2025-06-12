@@ -51,3 +51,20 @@ gmake[2]: *** [CMakeFiles/cpp23_stacktrace_example.dir/build.make:101: cpp23_sta
 gmake[1]: *** [CMakeFiles/Makefile2:166: CMakeFiles/cpp23_stacktrace_example.dir/all] Error 2
 gmake: *** [Makefile:91: all] Error 2
 ```
+
+
+```shell
+-- The C compiler identification is AppleClang 15.0.0.15000309
+-- The CXX compiler identification is AppleClang 15.0.0.15000309
+```
+
+```shell
+[  8%] Building CXX object CMakeFiles/cpp23_barrier_main.dir/src/cpp23/cpp23_barrier_main.cpp.o
+/Users/runner/work/cpp_learn/cpp_learn/src/cpp23/cpp23_barrier_main.cpp:21:22: error: no member named 'jthread' in namespace 'std'
+    std::vector<std::jthread> threads;
+                ~~~~~^
+1 error generated.
+make[2]: *** [CMakeFiles/cpp23_barrier_main.dir/src/cpp23/cpp23_barrier_main.cpp.o] Error 1
+make[1]: *** [CMakeFiles/cpp23_barrier_main.dir/all] Error 2
+make: *** [all] Error 2
+```
