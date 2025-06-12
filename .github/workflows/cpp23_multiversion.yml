@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        osver: [15, 16, 17, 18, 19]
+        osver: [15, 14]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -89,8 +89,15 @@ jobs:
       - name: Install g++ 13 abolve
         if: startsWith(matrix.compiler.cxx, 'g++') && matrix.compiler.ver >= 13
         run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt update
           sudo apt-get install g++-${{ matrix.compiler.ver }}
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.compiler.ver }} 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.compiler.ver }} 100
+          sudo update-alternatives --config gcc
+          sudo update-alternatives --config g++
+          gcc --version
+          g++ --version
 
       - name: cp CMakeLists.txt
         run: rm -rf CMakeLists.txt && cp ./cmake/cpp23/CMakeLists.txt .
