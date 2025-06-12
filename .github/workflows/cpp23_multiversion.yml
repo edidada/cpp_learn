@@ -1,4 +1,4 @@
-name: Build & Test
+name: Build & Test cpp23 multi conpiler version
 
 on:
   push:
