@@ -91,7 +91,9 @@ jobs:
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test
           sudo apt update
-          sudo apt-get install g++-${{ matrix.compiler.ver }}
+          sudo cp ${{github.workspace}}/apt/gcc-pin /etc/apt/preferences.d/gcc-pin
+          sudo apt update
+          sudo apt-get install gcc-${{ matrix.compiler.ver }} g++-${{ matrix.compiler.ver }}
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.compiler.ver }} 100
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-${{ matrix.compiler.ver }} 100
           sudo update-alternatives --config gcc
