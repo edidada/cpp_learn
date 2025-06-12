@@ -3,6 +3,37 @@ https://github.com/edidada/cpp11thread
 
 https://cppreference.cn/w/cpp/header
 
+## 17
+
+<memory_resource>
+(C++17)
+多态分配器和内存资源
+
+<any>
+(C++17)
+std::any 类
+
+<optional>
+(C++17)
+std::optional 类模板
+
+<variant>
+(C++17)
+std::variant 类模板
+
+<string_view>
+(C++17)
+std::basic_string_view 类模板
+
+<charconv>
+(C++17)
+std::to_chars 和 std::from_chars
+
+<filesystem>
+(C++17)
+std::filesystem::path 类和 支持函数
+
+## 23
 <compare> (C++20) 三路比较运算符 支持
 <coroutine> (C++20) 协程支持库
 <source_location> (C++20) 提供获取 源代码位置 的方法
