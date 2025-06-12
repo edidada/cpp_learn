@@ -52,8 +52,6 @@ jobs:
             ver: 13
           - cxx: g++
             ver: 14
-          - cxx: g++
-            ver: 15
           - cxx: clang++
             ver: 15
           - cxx: clang++
@@ -98,7 +96,7 @@ jobs:
           cat /etc/apt/preferences.d/gcc-pin
           echo "apt update"
           sudo apt update
-          echo "pt-get install gcc"
+          echo "apt-get install gcc"
           sudo apt-get install gcc-${{ matrix.compiler.ver }} g++-${{ matrix.compiler.ver }}
           echo "update-alternatives install"
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${{ matrix.compiler.ver }} 100
