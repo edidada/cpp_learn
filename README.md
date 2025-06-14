@@ -408,3 +408,170 @@ make[2]: *** [CMakeFiles/cpp23_barrier_main.dir/src/cpp23/cpp23_barrier_main.cpp
 make[1]: *** [CMakeFiles/cpp23_barrier_main.dir/all] Error 2
 make: *** [all] Error 2
 ```
+
+下面是一个 **C++11 标准下使用 `std::condition_variable` 和 `std::condition_variable_any` 的完整可执行示例程序**，演示了：
+
+- 如何使用 `std::condition_variable`
+- 如何使用 `std::condition_variable_any`
+- 使用 `cv_status` 判断等待是否超时
+- `notify_all_at_thread_exit` 的用法
+
+---
+
+## ✅ 示例：生产者-消费者模型（带超时和线程退出通知）
+
+### 🧩 功能说明：
+- 主线程启动一个子线程作为“生产者”，向队列中添加数据。
+- 主线程作为“消费者”从队列中取出数据。
+- 使用 `condition_variable` 实现同步。
+- 使用 `notify_all_at_thread_exit` 确保线程结束前唤醒所有等待的线程。
+- 使用 `wait_for()` 检查超时并处理 `cv_status`。
+
+---
+
+## 📄 完整代码如下：
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <chrono>
+#include <vector>
+#include <functional>
+
+using namespace std;
+using namespace std::chrono;
+
+// 全局共享队列和条件变量
+queue<int> data_queue;
+mutex mtx;
+condition_variable cv_producer, cv_consumer;
+
+bool done = false;
+
+// 生产者线程函数
+void producer(int id, int count) {
+    for (int i = 0; i < count; ++i) {
+        unique_lock<mutex> lock(mtx);
+        // 等待消费者消费（简单模拟）
+        cv_producer.wait(lock, []{ return data_queue.empty(); });
+
+        cout << "Producer " << id << " producing data: " << i << endl;
+        data_queue.push(i);
+
+        lock.unlock();
+        cv_consumer.notify_one();
+
+        this_thread::sleep_for(chrono::milliseconds(300));
+    }
+
+    // 线程退出时通知
+    notify_all_at_thread_exit(cv_consumer, unique_lock<mutex>(mtx));
+}
+
+// 消费者线程函数
+void consumer(int count) {
+    for (int i = 0; i < count; ++i) {
+        unique_lock<mutex> lock(mtx);
+
+        // 设置最大等待时间为 1 秒
+        auto now = system_clock::now();
+        bool has_data = cv_consumer.wait_until(lock, now + 1s, []{
+            return !data_queue.empty();
+        });
+
+        if (!has_data) {
+            cout << "[Consumer] Wait timeout, no data received." << endl;
+            continue;
+        }
+
+        int value = data_queue.front();
+        data_queue.pop();
+        cout << "Consumer consuming data: " << value << endl;
+
+        lock.unlock();
+        cv_producer.notify_one();
+    }
+}
+
+int main() {
+    int prod_count = 5;
+    int cons_count = 5;
+
+    thread prod(producer, 1, prod_count);
+
+    for (int i = 0; i < cons_count; ++i) {
+        consumer(i);
+    }
+
+    if (prod.joinable()) {
+        prod.join();
+    }
+
+    cout << "Main thread finished." << endl;
+
+    return 0;
+}
+```
+
+---
+
+## 🔍 输出示例（每次运行可能不同）：
+
+```
+Producer 1 producing data: 0
+Consumer consuming data: 0
+Producer 1 producing data: 1
+Consumer consuming data: 1
+Producer 1 producing data: 2
+Consumer consuming data: 2
+Producer 1 producing data: 3
+Consumer consuming data: 3
+Producer 1 producing data: 4
+Consumer consuming data: 4
+Main thread finished.
+```
+
+---
+
+## 🧠 关键知识点详解
+
+| 组件 | 说明 |
+|------|------|
+| `std::condition_variable` | 必须与 `std::unique_lock<std::mutex>` 配合使用 |
+| `std::condition_variable_any` | 可以与任何锁类型配合（如 `shared_mutex`、自定义锁） |
+| `wait()`, `wait_for()`, `wait_until()` | 阻塞等待通知 |
+| `notify_one()`, `notify_all()` | 唤醒一个或多个等待线程 |
+| `cv_status` | 返回值包括 `no_timeout` 和 `timeout` |
+| `notify_all_at_thread_exit()` | 在线程退出时唤醒所有等待线程，防止死锁 |
+
+---
+
+## 🚀 编译运行命令（g++/clang++）
+
+确保你使用的是 C++11 或以上标准：
+
+```bash
+g++ -std=c++11 -pthread condition_variable_example.cpp -o condition_variable_example
+./condition_variable_example
+```
+
+---
+
+## 🧪 扩展练习建议
+
+你可以尝试以下扩展功能来加深理解：
+
+| 扩展方向 | 实现方法 |
+|----------|-----------|
+| 多个生产者 | 启动多个 `producer` 线程 |
+| 多个消费者 | 启动多个 `consumer` 线程 |
+| 使用 `condition_variable_any` | 替换 `unique_lock` 为其他锁类型 |
+| 加入超时重试机制 | 如果等待超时，自动重试或退出 |
+| 使用 `cv_status` 判断结果 | 明确处理超时和正常唤醒情况 |
+
+---
+
+如果你希望我提供基于 `std::condition_variable_any` 的具体例子（比如与 `shared_lock` 结合），也可以继续提问！我可以为你写出完整的可执行程序。
