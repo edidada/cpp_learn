@@ -438,24 +438,18 @@ make: *** [all] Error 2
 #include <condition_variable>
 #include <queue>
 #include <chrono>
-#include <vector>
-#include <functional>
 
 using namespace std;
-using namespace std::chrono;
 
-// 全局共享队列和条件变量
 queue<int> data_queue;
 mutex mtx;
 condition_variable cv_producer, cv_consumer;
 
 bool done = false;
 
-// 生产者线程函数
 void producer(int id, int count) {
     for (int i = 0; i < count; ++i) {
         unique_lock<mutex> lock(mtx);
-        // 等待消费者消费（简单模拟）
         cv_producer.wait(lock, []{ return data_queue.empty(); });
 
         cout << "Producer " << id << " producing data: " << i << endl;
@@ -467,23 +461,20 @@ void producer(int id, int count) {
         this_thread::sleep_for(chrono::milliseconds(300));
     }
 
-    // 线程退出时通知
     notify_all_at_thread_exit(cv_consumer, unique_lock<mutex>(mtx));
 }
 
-// 消费者线程函数
 void consumer(int count) {
     for (int i = 0; i < count; ++i) {
         unique_lock<mutex> lock(mtx);
 
-        // 设置最大等待时间为 1 秒
-        auto now = system_clock::now();
-        bool has_data = cv_consumer.wait_until(lock, now + 1s, []{
+        auto now = chrono::system_clock::now();
+        bool has_data = cv_consumer.wait_until(lock, now + chrono::seconds(1), []{
             return !data_queue.empty();
         });
 
         if (!has_data) {
-            cout << "[Consumer] Wait timeout, no data received." << endl;
+            cout << "[Consumer] Wait timeout." << endl;
             continue;
         }
 
@@ -498,20 +489,15 @@ void consumer(int count) {
 
 int main() {
     int prod_count = 5;
-    int cons_count = 5;
-
     thread prod(producer, 1, prod_count);
 
-    for (int i = 0; i < cons_count; ++i) {
+    for (int i = 0; i < prod_count; ++i) {
         consumer(i);
     }
 
-    if (prod.joinable()) {
-        prod.join();
-    }
+    if (prod.joinable()) prod.join();
 
     cout << "Main thread finished." << endl;
-
     return 0;
 }
 ```
