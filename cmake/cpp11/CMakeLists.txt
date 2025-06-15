@@ -26,3 +26,6 @@ add_executable(cpp11_shared_future_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_shar
 add_executable(cpp11_launch_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_launch_main.cpp)
 add_executable(cpp11_future_status_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_future_status_main.cpp)
 add_executable(cpp11_future_erro_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_future_erro_main.cpp)
+add_executable(cpp11_recursive_mutex_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_recursive_mutex_main.cpp)
+add_executable(cpp11_lock_guard_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_lock_guard_main.cpp)
+add_executable(cpp11_try_lock_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_try_lock_main.cpp)
