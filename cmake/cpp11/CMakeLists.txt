@@ -23,3 +23,4 @@ add_executable(cpp11_condition_variable_any_main ${CMAKE_SOURCE_DIR}/src/cpp11/c
 add_executable(cpp11_cv_status_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_cv_status_main.cpp)
 add_executable(cpp11_promise_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_promise_main.cpp)
 add_executable(cpp11_shared_future_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_shared_future_main.cpp)
+add_executable(cpp11_launch_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_launch_main.cpp)
