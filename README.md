@@ -561,3 +561,75 @@ g++ -std=c++11 -pthread condition_variable_example.cpp -o condition_variable_exa
 ---
 
 如果你希望我提供基于 `std::condition_variable_any` 的具体例子（比如与 `shared_lock` 结合），也可以继续提问！我可以为你写出完整的可执行程序。
+
+类
+promise
+(C++11)
+存储用于异步检索的值
+(类模板)
+
+packaged_task
+(C++11)
+打包一个函数以存储其返回值，用于异步检索
+(类模板)
+
+future
+(C++11)
+等待异步设置的值
+(类模板)
+
+shared_future
+(C++11)
+等待异步设置的值（可能被其他 future 引用）
+(类模板)
+
+launch
+(C++11)
+指定 std::async 的启动策略
+(枚举)
+
+future_status
+(C++11)
+指定在 std::future 和 std::shared_future 上执行的定时等待的结果
+(枚举)
+
+future_error
+(C++11)
+报告与 future 或 promise 相关的错误
+(类)
+
+future_errc
+(C++11)
+标识 future 错误码
+(枚举)
+
+std::uses_allocator<std::promise>
+(C++11)
+特化 std::uses_allocator 类型特征
+(类模板特化)
+
+std::uses_allocator<std::packaged_task>
+(C++11)(直到 C++17)
+特化 std::uses_allocator 类型特征
+(类模板特化)
+
+函数
+async
+(C++11)
+异步运行函数（可能在新线程中），并返回一个 std::future，它将保存结果
+(函数模板)
+
+future_category
+(C++11)
+标识 future 错误类别
+(函数)
+
+std::swap(std::promise)
+(C++11)
+特化 std::swap 算法
+(函数模板)
+
+std::swap(std::packaged_task)
+(C++11)
+特化 std::swap 算法
+(函数模板)

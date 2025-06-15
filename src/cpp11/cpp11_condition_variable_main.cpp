@@ -27,6 +27,7 @@ void producer(int id, int count) {
     this_thread::sleep_for(chrono::milliseconds(300));
   }
 
+  // 计划在当前线程完全结束时调用 notify_all
   notify_all_at_thread_exit(cv_consumer, unique_lock<mutex>(mtx));
 }
 
