@@ -1,3 +1,4 @@
+module;            // 开启全局模块片段
 #include <iostream>
 
 export module mymodule;
