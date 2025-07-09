@@ -32,6 +32,11 @@ jobs:
       run: |
         brew install llvm@17
         echo "Adding LLVM to PATH"
+        export PATH="/opt/homebrew/opt/llvm@17/bin:$PATH"
+        which clang++
+        export CPPFLAGS="-I/opt/homebrew/opt/llvm@17/include"
+        export CXXFLAGS="-std=c++20 -fmodules-ts -stdlib=libc++"
+        export LDFLAGS="-L/opt/homebrew/opt/llvm@17/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm@17/lib/c++"
       env:
         # 将 LLVM 添加到路径中
         LLVM_INSTALL_DIR: $(brew --prefix llvm@17)
