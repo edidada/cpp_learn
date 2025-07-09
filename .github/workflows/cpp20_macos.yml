@@ -35,8 +35,8 @@ jobs:
       env:
         # 将 LLVM 添加到路径中
         LLVM_INSTALL_DIR: $(brew --prefix llvm@17)
-      post-job-script: |
-        echo "${LLVM_INSTALL_DIR}/bin" >> $GITHUB_PATH
+        # post-job-script: |
+        # echo "${LLVM_INSTALL_DIR}/bin" >> $GITHUB_PATH
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
