@@ -1,4 +1,3 @@
-// main.cpp
 import mymodule;
 
 int main() {

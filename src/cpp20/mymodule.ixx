@@ -1,4 +1,3 @@
-// mymodule.ixx
 #include <iostream>
 
 export module mymodule;
