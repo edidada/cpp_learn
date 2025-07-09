@@ -5,8 +5,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 启用 Modules TS
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodules-ts -stdlib=libc++")
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag("-fmodules-ts" HAS_MODULES)
+if(HAS_MODULES)
+    add_compile_options(-fmodules-ts)
+else()
+    message(WARNING "Modules are not supported on this compiler.")
+endif()
 
 # 如果你使用 Ninja 构建系统
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
