@@ -1,4 +1,5 @@
-module;            // 开启全局模块片段
+module; // 全局模块片段开始
+import std; // 使用模块化的标准库
 #include <iostream>
 
 export module mymodule;

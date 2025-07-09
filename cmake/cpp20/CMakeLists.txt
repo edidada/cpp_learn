@@ -5,6 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# 启用 Modules TS
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmodules-ts -stdlib=libc++")
+
+# 如果你使用 Ninja 构建系统
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libc++")
+
 # 设置模块基础目录
 set(MODULE_BASE_DIR ${CMAKE_SOURCE_DIR}/src/cpp20)
 
