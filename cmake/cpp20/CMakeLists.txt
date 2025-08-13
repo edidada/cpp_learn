@@ -19,18 +19,18 @@ endif()
 
 # 创建可执行文件目标
 add_executable(cpp20_ModuleExample
-        ${PROJECT_SOURCE_DIR}/src/cpp20/main_module.cpp
+        ${CMAKE_SOURCE_DIR}/src/cpp20/main_module.cpp
 )
 
 # 添加普通源文件
 target_sources(cpp20_ModuleExample
         PRIVATE
-        ${PROJECT_SOURCE_DIR}/src/cpp20/mymodule.cpp
+        ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.cpp
 )
 
 # 添加模块接口单元（必须指定 TYPE）
 target_sources(cpp20_ModuleExample
         PRIVATE
         FILE_SET modules TYPE CXX_MODULES FILES
-        ${PROJECT_SOURCE_DIR}/src/cpp20/mymodule.ixx
+        ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.ixx
 )
