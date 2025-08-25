@@ -4,3 +4,4 @@ project(cpp_learn)
 set(CMAKE_CXX_STANDARD 14)
 
 add_executable(cpp14_sfinae_main ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_sfinae_main.cpp)
+add_executable(cpp14_std_less ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_std_less.cpp)
