@@ -1,6 +1,3 @@
-// cpp14_std_less.cpp
-// 编译命令: g++ -std=c++14 cpp14_std_less.cpp -o cpp14_std_less
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -8,7 +5,7 @@
 #include <map>
 #include <string>
 
-// 使用 std::less 需要包含 functional 头文件 (虽然很多其他头文件也包含了它)
+// 使用 std::less 需要包含 functional 头文件
 #include <functional>
 
 int main() {
