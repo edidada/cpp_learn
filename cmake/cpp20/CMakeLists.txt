@@ -1,17 +1,41 @@
-cmake_minimum_required(VERSION 3.28)
-project(cpp20_learn)
+cmake_minimum_required(VERSION 3.30)
+project(cpp20_learn LANGUAGES CXX)
 
+# 注意：GCC 13 默认支持 <format>
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-message(STATUS "Project Source Dir: ${PROJECT_SOURCE_DIR}")
-message(STATUS "CMake Source Dir: ${CMAKE_SOURCE_DIR}")
-add_executable(cpp20_range ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_range.cpp)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(ModuleExample ${CMAKE_SOURCE_DIR}/src/cpp20/main.cpp ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.ixx ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.cpp)
-# 注意：这里可能需要额外的编译器标志来启用模块支持，
-# 但 Visual Studio 可能会通过其项目系统自动处理这些。
-# 对于 GCC/Clang，你可能需要添加如 `-fmodules-ts` 的标志。
+# 启用模块扫描
+set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 
-add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
-add_executable(cpp20_coroutine2 ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine2.cpp)
-add_executable(cpp20_concepts ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_concepts.cpp)
+# 判断是否为 Linux 且 不是 macOS
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT APPLE)
+    message(STATUS "Enabling -fmodules-ts for GCC Modules (Linux only)")
+    # 启用 GCC 的模块支持
+    add_compile_options(-fmodules-ts)
+    add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro_gcc.cpp)
+else()
+    message(STATUS "Skipping -fmodules-ts: Not on Linux or is macOS")
+endif()
+
+# 创建可执行文件目标
+add_executable(cpp20_ModuleExample
+        ${CMAKE_SOURCE_DIR}/src/cpp20/main_module.cpp
+)
+
+# 添加普通源文件
+target_sources(cpp20_ModuleExample
+        PRIVATE
+        ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.cpp
+)
+
+# 添加模块接口单元（必须指定 TYPE）
+target_sources(cpp20_ModuleExample
+        PRIVATE
+        FILE_SET modules TYPE CXX_MODULES FILES
+        ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.ixx
+)
+# 添加可执行文件
+add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)

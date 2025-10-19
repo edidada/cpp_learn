@@ -3,11 +3,6 @@ https://github.com/edidada/cpp11thread
 
 https://cppreference.cn/w/cpp/header
 
-# README
-https://github.com/edidada/cpp11thread
-
-https://cppreference.cn/w/cpp/header
-
 C++ 标准库头文件
 多用途头文件
 语言支持库
@@ -308,6 +303,8 @@ std::to_chars 和 std::from_chars
 std::filesystem::path 类和 支持函数
 
 ## 23
+<<<<<<< HEAD
+=======
 <compare> (C++20) 三路比较运算符 支持
 <coroutine> (C++20) 协程支持库
 <source_location> (C++20) 提供获取 源代码位置 的方法
@@ -343,6 +340,7 @@ C++23 中并没有直接引入 std::flat_map 和 std::flat_set，但可以使用
 -- The CXX compiler identification is GNU 13.3.0 报错 [ 50%] Linking CXX executable cpp23_stacktrace_example
 ```
 
+>>>>>>> cpp14
 <compare> (C++20) 三路比较运算符 支持
 <coroutine> (C++20) 协程支持库
 <source_location> (C++20) 提供获取 源代码位置 的方法
