@@ -30,12 +30,10 @@ target_sources(cpp20_ModuleExample
         PRIVATE
         ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.cpp
 )
-
 # 添加模块接口单元（必须指定 TYPE）
 target_sources(cpp20_ModuleExample
         PRIVATE
         FILE_SET modules TYPE CXX_MODULES FILES
         ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.ixx
 )
-# 添加可执行文件
 add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
