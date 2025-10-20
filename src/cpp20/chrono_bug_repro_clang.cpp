@@ -1,4 +1,4 @@
-// chrono_bug_repro_gcc.cpp
+// chrono_bug_repro_clang.cpp
 #include <iostream>
 #include <chrono>
 #include <iomanip>
