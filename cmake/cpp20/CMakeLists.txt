@@ -17,6 +17,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT APPLE)
     add_compile_options(-fmodules-ts)
     add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro_gcc.cpp)
 else()
+    add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
     message(STATUS "Skipping -fmodules-ts: Not on Linux or is macOS")
 endif()
 
@@ -36,4 +37,3 @@ target_sources(cpp20_ModuleExample
         FILE_SET modules TYPE CXX_MODULES FILES
         ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.ixx
 )
-add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
