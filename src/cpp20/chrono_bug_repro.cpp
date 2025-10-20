@@ -16,12 +16,12 @@ int main() {
                              std::chrono::system_clock::from_time_t(time_temp),
                              ms.count());
 
-    // ✅ 使用标准 hh_mm_ss 解析时间（替代 time_of_day）
+    // 使用标准 hh_mm_ss 解析时间（替代 time_of_day）
     using namespace std::chrono;
     auto today = floor<days>(now);
     auto tod = now - today;  // 得到今天过了多久（duration）
 
-    // ✅ 使用 hh_mm_ss 直接解析 duration
+    // 使用 hh_mm_ss 直接解析 duration
     auto hms = hh_mm_ss{tod};  // 这是标准 C++20
 
     std::cout << "Hours: " << hms.hours().count() << "\n";
