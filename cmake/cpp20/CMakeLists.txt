@@ -14,7 +14,7 @@ set(CMAKE_CXX_SCAN_FOR_MODULES ON)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT APPLE)
     message(STATUS "Enabling -fmodules-ts for GCC Modules (Linux only)")
     # 启用 GCC 的模块支持
-    add_compile_options(-fmodules-ts)
+#    add_compile_options(-fmodules-ts)
     add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro_gcc.cpp)
 else()
     add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
