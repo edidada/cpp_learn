@@ -1,8 +1,7 @@
 // main.cpp
 #include <iostream>
 #include "MyClass.hpp"
-// 如果你想在这里直接包含实现，可以这样做（但不推荐）
-// #include "MyClass.tpp"
+#include "MyClass.tpp"
 
 /**
  * 运行不了

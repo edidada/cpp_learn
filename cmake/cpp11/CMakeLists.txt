@@ -18,8 +18,6 @@ add_executable(cpp11_static_local ${CMAKE_SOURCE_DIR}/src/cpp11/static_local.cpp
 add_executable(cpp11_t_local ${CMAKE_SOURCE_DIR}/src/cpp11/t_local.cpp)
 add_executable(cpp11_test_friend ${CMAKE_SOURCE_DIR}/src/cpp11/test_friend.cpp)
 add_executable(cpp11_smatch ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_smatch.cpp)
-#add_executable(cpp11_my ${CMAKE_SOURCE_DIR}/src/my.cpp)
-add_executable(cpp11_constexpr_if ${CMAKE_SOURCE_DIR}/src/constexpr_if.cpp)
 
 add_executable(cpp11_condition_variable_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_condition_variable_main.cpp)
 add_executable(cpp11_condition_variable_any_main ${CMAKE_SOURCE_DIR}/src/cpp11/cpp11_condition_variable_any_main.cpp)
