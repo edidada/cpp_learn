@@ -13,6 +13,6 @@ private:
     T value_;
 };
 
-// 注意：这里不直接包含实现，而是稍后通过包含.tpp文件来包含
+#include "MyClass.tpp"
 
 #endif // MYCLASS_HPP
