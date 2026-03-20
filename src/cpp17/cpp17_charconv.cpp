@@ -1,6 +1,7 @@
 #include <iostream>
 #include <charconv>
 #include <array>
+#include <string_view>
 
 int main() {
   int value = 12345;
@@ -9,7 +10,8 @@ int main() {
   auto result = std::to_chars(buffer.data(), buffer.data() + buffer.size(), value);
 
   if (result.ec == std::errc()) {
-    std::cout << "Converted to string: " << std::string_view(buffer.data(), result.ptr) << std::endl;
+    std::size_t len = result.ptr - buffer.data();
+    std::cout << "Converted to string: " << std::string_view(buffer.data(), len) << std::endl;
   } else {
     std::cerr << "Conversion failed!" << std::endl;
   }
