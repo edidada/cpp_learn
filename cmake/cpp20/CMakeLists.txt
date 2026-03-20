@@ -14,7 +14,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT APPLE)
         ${CMAKE_SOURCE_DIR}/src/cpp20/main_module.cpp
         ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.cpp
     )
+    add_executable(cpp20_range ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_range.cpp)
+    add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
+    add_executable(cpp20_coroutine2 ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine2.cpp)
 else()
-    message(STATUS "Skipping -fmodules-ts: Not on Linux or is macOS")
-    add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
+    message(STATUS "Skipping -fmodules-ts and some C++20 features: Not on Linux or is macOS")
 endif()
+
+add_executable(cpp20_concepts ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_concepts.cpp)
