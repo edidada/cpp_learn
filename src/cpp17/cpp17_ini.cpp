@@ -43,7 +43,7 @@ int main() {
   auto config = parseIniFile(filename);
 
   // 获取server.port和db.user的值
-  std::string serverPort = config["server.port"];
+  int serverPort = std::stoi(config["server.port"]);
   std::string dbUser = config["db.user"];
 
   // 输出结果
