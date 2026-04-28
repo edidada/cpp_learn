@@ -7,6 +7,7 @@ add_subdirectory(cmake/cpp17)
 add_subdirectory(cmake/cpp20)
 add_subdirectory(cmake/cpp23)
 add_subdirectory(cmake/cpp98)
+add_subdirectory(Cpp_RAII_Demo)
 
 # C++03 examples
 add_executable(cpp03_containers src/cpp03_containers.cpp)
