@@ -16,3 +16,13 @@ add_executable(cpp14_ownership_ownership ${CMAKE_SOURCE_DIR}/src/cpp14/ownership
 add_executable(cpp14_ownership_pass_ownership ${CMAKE_SOURCE_DIR}/src/cpp14/ownership/pass_ownership.cpp)
 add_executable(cpp14_ownership_share_ownership ${CMAKE_SOURCE_DIR}/src/cpp14/ownership/share_ownership.cpp)
 add_executable(cpp14_ownership_temporary_borrowing ${CMAKE_SOURCE_DIR}/src/cpp14/ownership/temporary_borrowing.cpp)
+
+add_executable(cpp14_lambda ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_lambda.cpp)
+add_executable(cpp14_return_type_deduction ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_return_type_deduction.cpp)
+add_executable(cpp14_make_unique ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_make_unique.cpp)
+add_executable(cpp14_tuple ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_tuple.cpp)
+add_executable(cpp14_integer_sequence ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_integer_sequence.cpp)
+add_executable(cpp14_exchange ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_exchange.cpp)
+add_executable(cpp14_quoted ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_quoted.cpp)
+add_executable(cpp14_chrono_literals ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_chrono_literals.cpp)
+add_executable(cpp14_literals ${CMAKE_SOURCE_DIR}/src/cpp14/cpp14_literals.cpp)
