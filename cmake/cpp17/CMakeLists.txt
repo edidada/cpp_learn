@@ -12,6 +12,7 @@ add_executable(cpp17_filesystem ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_filesystem.c
 add_executable(cpp17_tuple ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_tuple.cpp)
 add_executable(cpp17_arg ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_arg.cpp)
 add_executable(cpp17_sfinae_main ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_sfinae_main.cpp)
+add_executable(cpp17_rvo ${CMAKE_SOURCE_DIR}/src/cpp17/cpp17_rvo.cpp)
 
 #add_executable(myset_b_tree ${CMAKE_SOURCE_DIR}/src/myset_b_tree.cpp)
 #add_executable(virtual_main ${CMAKE_SOURCE_DIR}/src/virtual_main.cpp)
