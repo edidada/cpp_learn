@@ -63,3 +63,34 @@ cmake --build . --target cpp20_concepts
 3. 协程：`cpp20_coroutine` → `cpp20_coroutine2`（理解 promise/句柄/co_yield 全流程）
 4. 模块：`mymodule.ixx` → `mymodule.cpp` → `main_module.cpp`
 5. chrono：`chrono_bug_repro_clang` → `chrono_bug_repro`（对比传统与 `std::format` 写法）
+
+---
+
+## C++20 解决了什么问题？
+
+C++20 是继 C++11 之后最大的一次升级，一次性补上 C++ 被诟病多年的四个老大难：
+
+| 新特性 | 解决的问题 | 之前的方案与不足 |
+| --- | --- | --- |
+| **概念（Concepts）** | 给模板参数加可读、可检查的约束 | SFINAE 报错信息成百上千行、晦涩；`enable_if` 组合爆炸；概念让约束**可命名、可复用、报错清晰** |
+| **协程（Coroutines）** | 用同步写法写异步逻辑 | 之前靠回调嵌套（回调地狱）、`std::async`/线程（开销大）、状态机手写；`co_await/co_yield` 让异步代码线性化 |
+| **范围视图（Ranges）** | 惰性、可组合、可读的数据管道 | `vector<int> tmp1; for(...) {...}` 手写中间容器；`transform/filter` 需要 `begin/end` 迭代器样板 |
+| **模块（Modules）** | 从根上解决头文件问题 | `#include` 文本复制导致：编译慢（O(n²) 重复解析）、宏污染全局、循环依赖难解、封装边界被破坏 |
+| **`std::format`** | 类型安全的格式化 | `printf` 格式串类型不匹配即 UB；`<<` 拼接冗长且不可定位；`sprintf` 缓冲区溢出风险 |
+| **`std::span`** | 零开销数组视图 | 传 `vector&`/`const T* + size`；`span` 统一"连续内存 + 长度"，且 `std::span<const T>` 可接受任意容器 |
+| **`std::jthread`** | 析构自动 join 的线程 | `std::thread` 忘记 `join` 直接析构会 `std::terminate`；手动管理 `join` 异常路径易漏 |
+| **三路比较 `<=>`** | 一键生成全部比较运算符 | 之前手写 6 个比较运算符（`< > <= >= == !=`），繁琐易漏 |
+
+## 与 C / Rust 的对比
+
+| 维度 | C | C++20 | Rust |
+| --- | --- | --- | --- |
+| **泛型约束** | 无（`void*`/宏） | Concepts（可命名约束，报错清晰） | Trait bound（语言核心，报错最佳） |
+| **异步** | 回调函数指针 | 协程（`co_await`） | `async/await`（原生一等公民） |
+| **数据管道** | 手写循环 | Ranges 视图链（惰性组合） | Iterator + 闭包（`map/filter` 内建） |
+| **模块/依赖** | `#include` 头文件 | Modules（编译期隔离） | `mod` + `crate`（模块系统内建） |
+| **格式化** | `printf`（类型不安全） | `std::format`（类型安全） | `println!`/`format!`（类型安全宏） |
+| **比较运算** | 手写 | `<=>` 自动推导 | 派生宏 `#[derive(PartialOrd)]` |
+| **并发** | pthread | `jthread`（自动 join）+ 原子 | `std::thread` + `Send/Sync` 静态检查 |
+
+**一句话总结**：C++20 的四个支柱——**Concepts 驯服模板、Ranges 扁平化算法、协程扁平化异步、Modules 终结头文件地狱**，把 C++ 从"好用但难学"推向"好用且可维护"；对比 Rust，这些能力 Rust 从第一天就以一等公民内建（trait/async/迭代器/mod 系统），C++20 是在兼容旧世界的前提下迎头赶上。
