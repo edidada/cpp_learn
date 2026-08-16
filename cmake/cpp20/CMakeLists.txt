@@ -1,23 +1,22 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.12)
 project(cpp20_learn LANGUAGES CXX)
 
-# 注意：GCC 13 默认支持 <format>
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 启用模块扫描
-set(CMAKE_CXX_SCAN_FOR_MODULES ON)
-
-# 判断是否为 Linux 且 不是 macOS
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT APPLE)
     message(STATUS "Enabling -fmodules-ts for GCC Modules (Linux only)")
-    # 启用 GCC 的模块支持
     add_compile_options(-fmodules-ts)
+    add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
+    add_executable(cpp20_range ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_range.cpp)
+    add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
+    add_executable(cpp20_coroutine2 ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine2.cpp)
+    add_executable(cpp20_concepts ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_concepts.cpp)
 else()
     add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
-    message(STATUS "Skipping -fmodules-ts: Not on Linux or is macOS")
+    message(STATUS "Skipping -fmodules-ts and some C++20 features: Not on Linux or is macOS")
 endif()
 
 # 创建可执行文件目标

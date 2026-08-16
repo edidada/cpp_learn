@@ -303,44 +303,6 @@ std::to_chars 和 std::from_chars
 std::filesystem::path 类和 支持函数
 
 ## 23
-<<<<<<< HEAD
-=======
-<compare> (C++20) 三路比较运算符 支持
-<coroutine> (C++20) 协程支持库
-<source_location> (C++20) 提供获取 源代码位置 的方法
-<version> (C++20) 提供用于验证库实现状态的宏
-<concepts> (C++20) 基本库概念
-<bit> (C++20) 位操作 函数
-<span> (C++20) std::span 视图
-<ranges> (C++20) 范围访问、原语、要求、工具和适配器
-<format> (C++20) 格式化库，包括 std::format
-<numbers>(C++20) 数学常数
-<syncstream> (C++20) std::basic_osyncstream, std::basic_syncbuf 和类型别名
-<barrier> (C++20) 屏障
-<latch> (C++20) 闩锁
-<semaphore> (C++20) 信号量
-<stop_token> (C++20) 用于 std::jthread 的停止令牌
-<format> (C++20) 格式化库，包括 std::format
-
-## 23
-<stdfloat> (C++23) 固定宽度浮点类型
-<stacktrace> (C++23) 堆栈跟踪 库
-<expected> (C++23) std::expected 类模板
-<flat_map> (C++23) std::flat_map 和 std::flat_multimap 容器适配器
-<flat_set> (C++23) std::flat_set 和 std::flat_multiset 容器适配器
-C++23 中并没有直接引入 std::flat_map 和 std::flat_set，但可以使用第三方库如 Boost 提供的类似功能作为替代。
-
-<mdspan> (C++23) std::mdspan 视图
-<generator> (C++23) std::generator 类模板
-<print> (C++23) 格式化输出库，包括 std::print
-<spanstream> (C++23) std::basic_spanstream, std::basic_ispanstream, std::basic_ospanstream 类模板和类型别名
-
-```shell
--- The C compiler identification is GNU 13.3.0
--- The CXX compiler identification is GNU 13.3.0 报错 [ 50%] Linking CXX executable cpp23_stacktrace_example
-```
-
->>>>>>> cpp14
 <compare> (C++20) 三路比较运算符 支持
 <coroutine> (C++20) 协程支持库
 <source_location> (C++20) 提供获取 源代码位置 的方法
@@ -703,3 +665,34 @@ std::thread与std::async分别适用于何种场景？需要访问底层的线�
 可读性	较差，需要理解 SFINAE	极佳，接近运行时逻辑
 编写复杂度	高，容易出错	简洁直观
 推荐程度	旧项目兼容	新代码首选
+
+## 14
+cpp14_std_less
+=== std::less 示例 (C++14) ===
+
+1. 作为函数对象直接使用:
+   5 < 10 ? 是
+   apple < banana ? 是
+
+2. 在 std::sort 中使用:
+   排序前: 64 34 25 12 22 11 90
+   排序后 (升序): 11 12 22 25 34 64 90
+
+3. 在 std::set 中使用:
+   std::set 中的元素 (升序): 1 2 3 5 8 9
+
+4. 在 std::map 中使用:
+   std::map 中的键值对 (按键升序):
+   apple: 3
+   banana: 1
+   cherry: 4
+   date: 2
+
+5. 模板参数推导 (C++14):
+   使用推导的 less: 7 < 3 ? 否
+   使用推导的 less: 3 < 7 ? 是
+
+6. 与 std::greater 对比 (降序排序):
+   原始: 3.14 2.71 1.41 1.73 0.57
+   降序: 3.14 2.71 1.73 1.41 0.57
+   升序: 0.57 1.41 1.73 2.71 3.14 
