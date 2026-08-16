@@ -36,7 +36,7 @@
 
 | 文件 | 组件 | 解决的问题 |
 | --- | --- | --- |
-| `index_sequence14.h` | 手写 `integer_sequence`/`make_index_sequence` + tuple 打印 / `apply` / 数组展开 | 编译期整数序列是 C++14 库元编程的"展开包"利器：把运行时才知道个数的参数（tuple、数组、模板包）在编译期逐一拆开处理 |
+| `index_sequence14.h` | `integer_sequence` + tuple 打印 / `apply` / 数组展开 | 编译期整数序列是 C++14 库元编程的"展开包"利器：把运行时才知道个数的参数（tuple、数组、模板包）在编译期逐一拆开处理 |
 | `main14.cpp` | C++14 组件用法演示 | 编译运行示例 |
 
 ## 编译与运行
