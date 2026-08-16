@@ -122,3 +122,40 @@ cmake --build . --target cpp11_lambda
 2. 再学资源管理：`smart_pointers` → `move_semantics`
 3. 进阶并发：`lock_guard` → `condition_variable` → `promise/future` → `packaged_task` → `async`
 4. 最后看库组件：随机数、正则、`tuple`、`chrono`
+
+---
+
+## C++11 解决了什么问题？
+
+C++11 是 C++ 历史上最大的一次升级（"现代 C++"的起点），针对 C++98/03 的痛点逐一定点解决：
+
+| 新特性 | 解决的问题 | C++98/03 之前的方案与不足 |
+| --- | --- | --- |
+| `nullptr` | 空指针类型安全 | `NULL`/`0` 是整数，可被当作 `int` 重载决议，`f(0)` 与 `f(nullptr)` 分不清；`nullptr_t` 只能转指针/成员指针 |
+| `auto` / 范围 for | 冗长的类型书写、迭代器模板噪音 | 手写 `std::vector<int>::iterator it = v.begin();`；范围 for 彻底消灭迭代器样板 |
+| Lambda | 就地定义可调用对象 | C++98 只能在**别处**写函数对象类再传进去；或 `bind1st`/`bind2nd` 组合器晦涩难用 |
+| 移动语义（右值引用） | 消除深拷贝的性能浪费 | C++98 无移动，返回临时对象必触发深拷贝；`auto_ptr` 用拷贝假装转移，破坏语义 |
+| 智能指针 `unique_ptr/shared_ptr/weak_ptr` | 自动资源管理、杜绝裸指针泄漏 | `auto_ptr` 拷贝即转移、不能入容器；裸指针无自动释放 |
+| `constexpr` | 编译期求值 | C++98 只能靠宏（`#define SQUARE(x) ((x)*(x))`）+ 模板元编程（`enum` 技巧）实现编译期计算，丑陋且无类型安全 |
+| `override/final` | 显式声明虚函数覆盖 | C++98 无标记，改基类签名后子类静默失去多态（不再覆盖），运行时行为错误难排查 |
+| 委托构造函数 | 构造逻辑复用 | C++98 只能在成员初始化列表里重复写初始化逻辑，或用私有 `init()` 函数（无法初始化 const 成员） |
+| 标准线程库 `std::thread` | 跨平台并发 | C++98 无标准线程，只能 pthread（POSIX）/Win32 API，代码不可移植 |
+| `mutex/condition_variable/future/promise` | 同步与线程间通信 | 手工 pthread 锁/条件变量，错误处理繁琐；future/promise 提供类型安全的跨线程传值 |
+| `thread_local` | 线程局部存储 | 无标准机制，靠编译器扩展（`__thread`/`__declspec(thread)`） |
+| 正则库 `std::regex` | 标准正则 | 之前用 POSIX regex、boost::regex 等第三方，接口不统一 |
+| `std::tuple` | 多值返回/异构组合 | C++98 只能返回 `struct` 或 `pair`；`std::tie` 一并简化多返回值 |
+| 新增容器 `array/unordered_*` | 定长数组、哈希查找 | C 数组无边界检查；`map` 是红黑树 O(log n)，`unordered_map` 哈希 O(1) |
+
+## 与 C / Rust 的对比
+
+| 维度 | C | C++11 | Rust |
+| --- | --- | --- | --- |
+| **空指针** | `NULL`（`#define NULL 0`） | `nullptr`（类型安全） | 无空指针，`Option<T>` |
+| **资源管理** | 手动 `malloc/free` | `unique_ptr`/`shared_ptr`（引用计数） | 所有权 + `Drop`，编译期强制，零运行时开销 |
+| **移动语义** | 无（全靠拷贝） | 右值引用 `&&` + `std::move` | 移动是默认语义，`move` 关键字 |
+| **并发** | pthread 手工加锁 | 标准线程库（跨平台） | `std::thread` + `Send/Sync` 编译期检查，杜绝数据竞争 |
+| **泛型编程** | `void*` + 宏 | 模板 + `constexpr` + 变参模板 | 泛型 + Trait（约束更清晰） |
+| **Lambda** | 无（函数指针） | Lambda（C++11） | 闭包（自带借用语义，安全） |
+| **内存安全** | 无保证 | 智能指针 + RAII（默认仍可能裸指针） | 编译期保证（除 `unsafe`） |
+
+**一句话总结**：C++11 用「**移动语义 + 智能指针 + RAII**」解决了 C++98 时代最痛的内存与性能问题，用「**标准线程库**」解决平台移植问题，用「**auto/lambda/nullptr**」让代码简洁类型安全；与 Rust 相比，C++11 的保证仍是"惯例性"的（默认不强制），Rust 则将同样的思路上升为编译期强制检查。
