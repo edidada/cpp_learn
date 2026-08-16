@@ -22,13 +22,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: ninja
+      run: brew install ninja
+
     - name: cp cmake
       run: rm -rf CMakeLists.txt && cp ./cmake/cpp20/CMakeLists.txt .
+
+    - name: Install LLVM Clang 17
+      run: |
+        brew install llvm@17
+        echo "Adding LLVM to PATH"
+        export PATH="/opt/homebrew/opt/llvm@17/bin:$PATH"
+        which clang++
+        export CPPFLAGS="-I/opt/homebrew/opt/llvm@17/include"
+        export CXXFLAGS="-std=c++20 -fmodules-ts -stdlib=libc++"
+        export LDFLAGS="-L/opt/homebrew/opt/llvm@17/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm@17/lib/c++"
+      env:
+        # 将 LLVM 添加到路径中
+        LLVM_INSTALL_DIR: $(brew --prefix llvm@17)
+        # post-job-script: |
+        # echo "${LLVM_INSTALL_DIR}/bin" >> $GITHUB_PATH
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -G Ninja -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       # Build your program with the given configuration
