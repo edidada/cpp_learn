@@ -29,9 +29,9 @@ target_sources(cpp20_ModuleExample
         PRIVATE
         ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.cpp
 )
-# 添加模块接口单元（必须指定 TYPE）
+# 添加模块接口单元（必须指定 TYPE，且显式指定 BASE_DIRS）
 target_sources(cpp20_ModuleExample
         PRIVATE
-        FILE_SET modules TYPE CXX_MODULES FILES
+        FILE_SET modules TYPE CXX_MODULES BASE_DIRS ${CMAKE_SOURCE_DIR}/src/cpp20 FILES
         ${CMAKE_SOURCE_DIR}/src/cpp20/mymodule.ixx
 )
