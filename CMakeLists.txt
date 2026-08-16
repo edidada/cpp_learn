@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.28)
-project(cpp23_learn)
+cmake_minimum_required(VERSION 3.12)
+project(cpp_learn)
 
 add_subdirectory(cmake/cpp11)
 add_subdirectory(cmake/cpp14)
