@@ -3,3 +3,13 @@ build/
 cmake-build-*
 cmake-build-*/
 build-*/
+
+.idea
+build-cpp26/
+build-mt98/
+cmake-build-debug
+cmake-build-debug-visual-studio
+cmake-build-debug-wsl
+cmake-build-debug-wsl24
+cmake-build-debug_vs26
+cmake-build-default-mingw
