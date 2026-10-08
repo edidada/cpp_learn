@@ -23,13 +23,23 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: ninja
+      # 原来这两行在 Ubuntu 24.04 runner 上是坏的：源硬写成 jammy（noble 上装 jammy 包），
+      # 公钥用早已废弃的 apt-key（日志里就是那句
+      # "W: GPG error: https://apt.llvm.org/jammy llvm-toolchain-jammy-17 InRelease:
+      #  NO_PUBKEY 15CF4D18AF4F7421"）。改成：Ubuntu 自带仓库优先，
+      # 需要 apt.llvm.org 时按当前 codename 加源并用 signed-by keyring 装公钥。
       run: |
         sudo apt update
         sudo apt install ninja-build libc++-dev libc++abi-dev -y
-        sudo apt install software-properties-common
-        sudo add-apt-repository "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-17 main"
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        sudo apt install clang-17
+        if ! sudo apt install -y clang-17; then
+          echo "Ubuntu 仓库没有 clang-17，加 apt.llvm.org"
+          CODENAME=$(. /etc/os-release && echo ${VERSION_CODENAME})
+          wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/llvm-snapshot.gpg.keyring
+          echo "deb [signed-by=/usr/share/keyrings/llvm-snapshot.gpg.keyring] https://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-17 main" | sudo tee /etc/apt/sources.list.d/llvm.list
+          sudo apt update
+          sudo apt install -y clang-17
+        fi
+        clang++-17 --version
 
     - name: cp cmake
       run: rm -rf CMakeLists.txt && cp ./cmake/cpp20/CMakeLists.txt .
