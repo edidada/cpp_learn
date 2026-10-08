@@ -101,6 +101,35 @@ jobs:
           sudo apt-get install -y clang-${VER}
           clang++-${VER} --version
 
+      - name: Clang 15/16/17 改用 libc++
+        if: startsWith(matrix.compiler.cxx, 'clang') && matrix.compiler.ver >= 15 && matrix.compiler.ver < 18
+        # 装好 clang 之后这几档还是红，但不是 demo 的锅：ubuntu-latest(noble) 上 clang 默认搭档
+        # 是 runner 自带的 libstdc++ 14，而 libstdc++ 14 的头里有 clang 18 之前解析不了的东西，
+        # 实测报错（clang++-15/16/17，编的是 cpp23_barrier_main / cpp23_split / cpp23_split2）：
+        #   include/c++/14/ranges:6315: error: requires clause differs in template redeclaration
+        #   include/c++/14/ranges:9057: error: type-id cannot have a name   ← (auto(__x) += __y) 是 GNU 扩展
+        #   include/c++/14/bits/unicode.h:591: error: constraints not satisfied for '_Utf_view'
+        #   include/c++/14/bits/stl_pair.h:410: error: no matching function for call to 'get'
+        # clang 自己的标准库 libc++ 才是这些老版本 clang 的正牌搭档（macOS 腿一直是 libc++，都是绿的），
+        # 所以 15/16/17 三档换成 libc++，多版本覆盖度不减；18/19/20 继续用 libstdc++ 14（已实测全绿）。
+        run: |
+          VER=${{ matrix.compiler.ver }}
+          sudo apt-get install -y --no-install-recommends libc++-${VER}-dev libc++abi-${VER}-dev
+          # 只动 CXXFLAGS，不要设 LDFLAGS：project() 同时 enabled C，
+          # LDFLAGS 会被 CMake 拿去测 C 编译器，cc 不认 -stdlib=libc++ 会直接 configure 失败
+          # （实测报错：cc: error: unrecognized command-line option '-stdlib=libc++'）。
+          # 链接阶段 CMake 会把 CXX flags 带进 C++ 目标的 link 行，
+          # 而 Debian 的 libc++ 包装好了自动带上 libc++abi/libunwind，不需要额外 -lc++abi。
+          FLAGS="-stdlib=libc++"
+          if [ "$VER" -lt 16 ]; then
+            # libc++ 15 把 <ranges> 整套放在实验区，不加 -fexperimental-library 连 std::views 都看不到
+            # （实测：error: no member named 'views' in namespace 'std'）。16/17 已转正，不需要这个开关。
+            FLAGS="$FLAGS -fexperimental-library"
+          fi
+          echo "CXXFLAGS=$FLAGS" >> "$GITHUB_ENV"
+          clang++-${VER} --version
+          printf '#include <memory>\n#include <stdexcept>\n#include <vector>\nint main(){auto p=std::make_unique<std::vector<int>>();try{throw std::runtime_error("x");}catch(...){}return (int)p->size();}\n' | clang++-${VER} $FLAGS -std=c++2b -x c++ - -o /tmp/libcxx_smoke && echo "libc++-${VER} 冒烟通过（能编译能链接）"
+
       - name: Install g++ 13 above
         if: startsWith(matrix.compiler.cxx, 'g++') && matrix.compiler.ver >= 13
         run: |
