@@ -1,4 +1,5 @@
-// mymodule.ixx
+module; // 全局模块片段开始
+
 #include <iostream>
 
 export module mymodule;
