@@ -7,8 +7,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT APPLE)
-    message(STATUS "Enabling -fmodules-ts for GCC Modules (Linux only)")
-    add_compile_options(-fmodules-ts)
+    # -fmodules-ts 是 GCC 专属开关：clang 的模块开关叫 -fmodules/-fmodule-file=，
+    # 见到 -fmodules-ts 直接 "error: unknown argument"（CI 上 clang++-17 那枚 job 就是这么红的）。
+    # 所以"是不是 Linux"不够，还要"是不是 GCC"。
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        message(STATUS "Enabling -fmodules-ts for GCC Modules (Linux + GCC)")
+        add_compile_options(-fmodules-ts)
+    else()
+        message(STATUS "Skipping -fmodules-ts: ${CMAKE_CXX_COMPILER_ID} 不接受这个 GCC 专属开关")
+    endif()
     add_executable(chrono_bug ${CMAKE_SOURCE_DIR}/src/cpp20/chrono_bug_repro.cpp)
     add_executable(cpp20_range ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_range.cpp)
     add_executable(cpp20_coroutine ${CMAKE_SOURCE_DIR}/src/cpp20/cpp20_coroutine.cpp)
