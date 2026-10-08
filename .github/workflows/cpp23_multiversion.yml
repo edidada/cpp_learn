@@ -79,10 +79,27 @@ jobs:
 
       - name: Install Clang 13 above
         if: startsWith(matrix.compiler.cxx, 'clang') && matrix.compiler.ver >= 13
+        # 这里原来直接跑 apt.llvm.org 的 llvm.sh，两个坑：
+        #   1) apt.llvm.org 对 noble 已经不发 15/16 档了（实测 https://apt.llvm.org/noble/dists/llvm-toolchain-noble-16/Release → 404），
+        #      apt 就报 "E: The repository '...' does not have a Release file." 并 exit 100
+        #      —— CI 上 ubuntu (clang++, 16) 那枚 job 的死因是它，不是编译错误；
+        #   2) llvm.sh 里用的 apt-key 在 Ubuntu 24.04 已废弃，还会捎带 NO_PUBKEY 警告。
+        # 改成：先试 Ubuntu 自带仓库（clang-15/16/18/19 都在），拿不到再加 apt.llvm.org，
+        # 并且用 signed-by keyring 的正确姿势装公钥。
         run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x ./llvm.sh
-          sudo ./llvm.sh ${{ matrix.compiler.ver }}
+          VER=${{ matrix.compiler.ver }}
+          sudo apt-get update -y
+          if sudo apt-get install -y clang-${VER}; then
+            echo "clang-${VER} 来自 Ubuntu 官方仓库"
+            exit 0
+          fi
+          echo "Ubuntu 仓库里没有 clang-${VER}，改加 apt.llvm.org"
+          CODENAME=$(. /etc/os-release && echo ${VERSION_CODENAME})
+          wget -qO - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/llvm-snapshot.gpg.keyring
+          echo "deb [signed-by=/usr/share/keyrings/llvm-snapshot.gpg.keyring] https://apt.llvm.org/${CODENAME}/ llvm-toolchain-${CODENAME}-${VER} main" | sudo tee /etc/apt/sources.list.d/llvm.list
+          sudo apt-get update -y
+          sudo apt-get install -y clang-${VER}
+          clang++-${VER} --version
 
       - name: Install g++ 13 above
         if: startsWith(matrix.compiler.cxx, 'g++') && matrix.compiler.ver >= 13
