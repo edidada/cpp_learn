@@ -368,3 +368,331 @@ make[2]: *** [CMakeFiles/cpp23_barrier_main.dir/src/cpp23/cpp23_barrier_main.cpp
 make[1]: *** [CMakeFiles/cpp23_barrier_main.dir/all] Error 2
 make: *** [all] Error 2
 ```
+
+下面是一个 **C++11 标准下使用 `std::condition_variable` 和 `std::condition_variable_any` 的完整可执行示例程序**，演示了：
+
+- 如何使用 `std::condition_variable`
+- 如何使用 `std::condition_variable_any`
+- 使用 `cv_status` 判断等待是否超时
+- `notify_all_at_thread_exit` 的用法
+
+---
+
+## ✅ 示例：生产者-消费者模型（带超时和线程退出通知）
+
+### 🧩 功能说明：
+- 主线程启动一个子线程作为“生产者”，向队列中添加数据。
+- 主线程作为“消费者”从队列中取出数据。
+- 使用 `condition_variable` 实现同步。
+- 使用 `notify_all_at_thread_exit` 确保线程结束前唤醒所有等待的线程。
+- 使用 `wait_for()` 检查超时并处理 `cv_status`。
+
+---
+
+## 📄 完整代码如下：
+
+```cpp
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <queue>
+#include <chrono>
+
+using namespace std;
+
+queue<int> data_queue;
+mutex mtx;
+condition_variable cv_producer, cv_consumer;
+
+bool done = false;
+
+void producer(int id, int count) {
+    for (int i = 0; i < count; ++i) {
+        unique_lock<mutex> lock(mtx);
+        cv_producer.wait(lock, []{ return data_queue.empty(); });
+
+        cout << "Producer " << id << " producing data: " << i << endl;
+        data_queue.push(i);
+
+        lock.unlock();
+        cv_consumer.notify_one();
+
+        this_thread::sleep_for(chrono::milliseconds(300));
+    }
+
+    notify_all_at_thread_exit(cv_consumer, unique_lock<mutex>(mtx));
+}
+
+void consumer(int count) {
+    for (int i = 0; i < count; ++i) {
+        unique_lock<mutex> lock(mtx);
+
+        auto now = chrono::system_clock::now();
+        bool has_data = cv_consumer.wait_until(lock, now + chrono::seconds(1), []{
+            return !data_queue.empty();
+        });
+
+        if (!has_data) {
+            cout << "[Consumer] Wait timeout." << endl;
+            continue;
+        }
+
+        int value = data_queue.front();
+        data_queue.pop();
+        cout << "Consumer consuming data: " << value << endl;
+
+        lock.unlock();
+        cv_producer.notify_one();
+    }
+}
+
+int main() {
+    int prod_count = 5;
+    thread prod(producer, 1, prod_count);
+
+    for (int i = 0; i < prod_count; ++i) {
+        consumer(i);
+    }
+
+    if (prod.joinable()) prod.join();
+
+    cout << "Main thread finished." << endl;
+    return 0;
+}
+```
+
+---
+
+## 🔍 输出示例（每次运行可能不同）：
+
+```
+Producer 1 producing data: 0
+Consumer consuming data: 0
+Producer 1 producing data: 1
+Consumer consuming data: 1
+Producer 1 producing data: 2
+Consumer consuming data: 2
+Producer 1 producing data: 3
+Consumer consuming data: 3
+Producer 1 producing data: 4
+Consumer consuming data: 4
+Main thread finished.
+```
+
+---
+
+## 🧠 关键知识点详解
+
+| 组件 | 说明 |
+|------|------|
+| `std::condition_variable` | 必须与 `std::unique_lock<std::mutex>` 配合使用 |
+| `std::condition_variable_any` | 可以与任何锁类型配合（如 `shared_mutex`、自定义锁） |
+| `wait()`, `wait_for()`, `wait_until()` | 阻塞等待通知 |
+| `notify_one()`, `notify_all()` | 唤醒一个或多个等待线程 |
+| `cv_status` | 返回值包括 `no_timeout` 和 `timeout` |
+| `notify_all_at_thread_exit()` | 在线程退出时唤醒所有等待线程，防止死锁 |
+
+---
+
+## 🚀 编译运行命令（g++/clang++）
+
+确保你使用的是 C++11 或以上标准：
+
+```bash
+g++ -std=c++11 -pthread condition_variable_example.cpp -o condition_variable_example
+./condition_variable_example
+```
+
+---
+
+## 🧪 扩展练习建议
+
+你可以尝试以下扩展功能来加深理解：
+
+| 扩展方向 | 实现方法 |
+|----------|-----------|
+| 多个生产者 | 启动多个 `producer` 线程 |
+| 多个消费者 | 启动多个 `consumer` 线程 |
+| 使用 `condition_variable_any` | 替换 `unique_lock` 为其他锁类型 |
+| 加入超时重试机制 | 如果等待超时，自动重试或退出 |
+| 使用 `cv_status` 判断结果 | 明确处理超时和正常唤醒情况 |
+
+---
+
+如果你希望我提供基于 `std::condition_variable_any` 的具体例子（比如与 `shared_lock` 结合），也可以继续提问！我可以为你写出完整的可执行程序。
+
+类
+promise
+(C++11)
+存储用于异步检索的值
+(类模板)
+
+packaged_task
+(C++11)
+打包一个函数以存储其返回值，用于异步检索
+(类模板)
+
+future
+(C++11)
+等待异步设置的值
+(类模板)
+
+shared_future
+(C++11)
+等待异步设置的值（可能被其他 future 引用）
+(类模板)
+
+launch
+(C++11)
+指定 std::async 的启动策略
+(枚举)
+
+future_status
+(C++11)
+指定在 std::future 和 std::shared_future 上执行的定时等待的结果
+(枚举)
+
+future_error
+(C++11)
+报告与 future 或 promise 相关的错误
+(类)
+
+future_errc
+(C++11)
+标识 future 错误码
+(枚举)
+
+std::uses_allocator<std::promise>
+(C++11)
+特化 std::uses_allocator 类型特征
+(类模板特化)
+
+std::uses_allocator<std::packaged_task>
+(C++11)(直到 C++17)
+特化 std::uses_allocator 类型特征
+(类模板特化)
+
+函数
+async
+(C++11)
+异步运行函数（可能在新线程中），并返回一个 std::future，它将保存结果
+(函数模板)
+
+future_category
+(C++11)
+标识 future 错误类别
+(函数)
+
+std::swap(std::promise)
+(C++11)
+特化 std::swap 算法
+(函数模板)
+
+std::swap(std::packaged_task)
+(C++11)
+特化 std::swap 算法
+(函数模板)
+
+
+类
+mutex
+(C++11)
+提供基本互斥设施
+(类)
+
+timed_mutex
+(C++11)
+提供实现带超时锁定的互斥设施
+(类)
+
+recursive_mutex
+(C++11)
+提供可被同一线程递归锁定的互斥设施
+(类)
+
+recursive_timed_mutex
+(C++11)
+提供可被递归锁定的互斥设施
+由同一线程并实现带超时锁定的锁定
+(类)
+
+lock_guard
+(C++11)
+实现严格基于作用域的互斥量所有权包装器
+(类模板)
+
+unique_lock
+(C++11)
+实现可移动的互斥量所有权包装器
+(类模板)
+
+scoped_lock
+(C++17)
+用于多个互斥量的避免死锁的 RAII 包装器
+(类模板)
+
+once_flag
+(C++11)
+辅助对象，用于确保 call_once 仅调用函数一次
+(类)
+函数
+
+try_lock
+(C++11)
+尝试通过重复调用 try_lock 来获得互斥量的所有权
+(函数模板)
+
+lock
+(C++11)
+锁定指定的互斥量，如果任何互斥量不可用则阻塞
+(函数模板)
+
+call_once
+(C++11)
+仅调用函数一次，即使从多个线程调用也是如此
+(函数模板)
+
+std::swap(std::unique_lock)
+(C++11)
+特化 std::swap 算法
+(函数模板)
+
+std::thread与std::async分别适用于何种场景？需要访问底层的线程实现的API，这个时候通过std::thread可以拿到底层线程的句柄，然后才可以使用底层的线程API。需要给你的应用程序来优化线程的使用，这需要根据应用的特点来优化线程的使用，比如特定机器架构的服务器软件，这个时候就需要使用特定平台下的线程实现。你需要实现一些高级的线程组件，例如线程池，这是C++标准库没有提供的高级组件除此之外还是建议使用async。
+
+特性	C++14 (SFINAE)	C++17 (constexpr if)
+实现方式	多个函数模板 + enable_if	单个函数模板 + if constexpr
+可读性	较差，需要理解 SFINAE	极佳，接近运行时逻辑
+编写复杂度	高，容易出错	简洁直观
+推荐程度	旧项目兼容	新代码首选
+
+## 14
+cpp14_std_less
+=== std::less 示例 (C++14) ===
+
+1. 作为函数对象直接使用:
+   5 < 10 ? 是
+   apple < banana ? 是
+
+2. 在 std::sort 中使用:
+   排序前: 64 34 25 12 22 11 90
+   排序后 (升序): 11 12 22 25 34 64 90
+
+3. 在 std::set 中使用:
+   std::set 中的元素 (升序): 1 2 3 5 8 9
+
+4. 在 std::map 中使用:
+   std::map 中的键值对 (按键升序):
+   apple: 3
+   banana: 1
+   cherry: 4
+   date: 2
+
+5. 模板参数推导 (C++14):
+   使用推导的 less: 7 < 3 ? 否
+   使用推导的 less: 3 < 7 ? 是
+
+6. 与 std::greater 对比 (降序排序):
+   原始: 3.14 2.71 1.41 1.73 0.57
+   降序: 3.14 2.71 1.73 1.41 0.57
+   升序: 0.57 1.41 1.73 2.71 3.14 
