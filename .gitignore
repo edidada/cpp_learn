@@ -2,7 +2,10 @@
 build/
 cmake-build-*
 cmake-build-*/
+<<<<<<< HEAD
 build-*/
+=======
+>>>>>>> cpp26
 
 .idea
 build-cpp26/
@@ -13,3 +16,4 @@ cmake-build-debug-wsl
 cmake-build-debug-wsl24
 cmake-build-debug_vs26
 cmake-build-default-mingw
+
