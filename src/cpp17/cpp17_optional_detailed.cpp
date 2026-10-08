@@ -2,6 +2,10 @@
 #include <optional>
 #include <string>
 #include <vector>
+// std::find 在 <algorithm>，std::distance 在 <iterator>。
+// libc++（macOS）会传递包含进来所以侥幸能编，libstdc++（Linux gcc）不会 —— 头文件要按标准写全。
+#include <algorithm>
+#include <iterator>
 
 std::optional<int> find_value(const std::vector<int>& v, int target) {
     auto it = std::find(v.begin(), v.end(), target);
