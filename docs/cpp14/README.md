@@ -54,3 +54,35 @@ cmake --build . --target cpp14_sfinae_main
 2. SFINAE：`cpp14_sfinae_main`（模板检测是理解现代 C++ 元编程的基础）
 3. 所有权：`ownership.cpp` → `pass_ownership` → `share_ownership` → `observer` → `advance_ownership`
 4. 线程互斥：`example/6-3-1.cpp` 对比 `6-3-1_success.cpp`（错误处理的最佳实践）
+
+---
+
+## C++14 解决了什么问题？
+
+C++14 是 C++11 的**增量完善版**（"完善 C++11"），修正了 C++11 使用中暴露的繁琐与缺漏：
+
+| 新特性 | 解决的问题 | C++11/之前的方案与不足 |
+| --- | --- | --- |
+| 泛型 Lambda | Lambda 参数用 `auto`，一份 Lambda 适配多种类型 | C++11 Lambda 必须显式写出参数类型，每种类型写一个 Lambda；或依赖模板函数对象类，样板多 |
+| Lambda 捕获初始化（`[x = expr]`） | 捕获表达式结果/移动捕获 | C++11 只能捕获具名变量，无法捕获局部表达式或移动构造对象，只能绕道 `std::bind` |
+| 返回值类型推导（`auto` 返回） | 编译器推导函数返回类型 | C++11 必须手写返回类型（常为 `decltype` 表达式，冗长）；无法简洁写通用转换函数 |
+| 变量模板（`template<T> constexpr T pi = ...`） | 一份常量模板实例化出多类型 | C++11 只能为每个类型写函数/类模板静态成员，或用宏定义，重复且无类型安全 |
+| 泛型 `constexpr` 放宽 | 更复杂的编译期函数 | C++11 `constexpr` 函数体只能单 `return` 语句，几乎无法写分支/循环，实用价值低 |
+| `std::make_unique` | 统一创建 `unique_ptr` | C++11 只有 `make_shared`，`unique_ptr` 需裸 `new`（`new Foo(args)`），异常安全瑕疵：`f(unique_ptr<T>(new T), g())` 求值顺序可导致泄漏 |
+| `std::integer_sequence` | 编译期整数序列展开 | 元编程手写 `seq<>` 展开技巧，代码晦涩 |
+| `std::less<>` 透明比较器（如 `std::less<>` 泛型版本） | 异构键查找 | 默认 `std::less<T>` 限定同类型比较；透明版本允许 `set<long>::find(short)`，减少临时对象构造 |
+
+> 本分支的 `cpp14_sfinae_main.cpp` 正是 C++11/14 时代"成员检测"的核心工具：`void_t` + `decltype` + `std::enable_if`，它解决的痛点是——**模板想要"如果类型有某成员就 A，否则 B"的分派，C++98/03 时代没有可靠手段**，只能依赖重载决议的 SFINAE 规则，写法极难。
+
+## 与 C / Rust 的对比
+
+| 维度 | C | C++14 | Rust |
+| --- | --- | --- | --- |
+| **类型推导** | 无（一切手写） | `auto`（函数返回值/泛型 Lambda） | `let` + 强类型推断，全面 |
+| **编译期计算** | 宏（仅文本替换） | 泛型 `constexpr`（任意函数） | `const fn`（受限，但更安全） |
+| **泛型 Lambda** | 无 | C++14 支持 | 闭包天然泛型 |
+| **所有权细节** | 手动 | `make_unique` 等安全工厂 | `Box::new`/`Rc::new`，编译期强制 |
+| **元编程** | 无 | 模板 + SFINAE（报错体验差） | 过程宏 + Trait（受控、清晰） |
+| **安全保证** | 无 | 惯例性 RAII（编译器不强制） | 编译器强制 |
+
+**一句话总结**：C++14 主要解决 C++11 的**"写法繁琐"**问题——类型推导、泛型 Lambda、变量模板让代码更短；用 `make_unique` 堵住裸 `new` 的异常安全缺口。它不引入颠覆性概念，而是把 C++11 打磨顺手；对比 Rust，C++ 的"推导"仍受限于模板的报错可读性，而 Rust 的类型系统在设计上更自洽。
