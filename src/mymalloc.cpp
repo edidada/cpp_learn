@@ -28,7 +28,13 @@ static struct block *find_free_block(struct block **last, size_t size) {
 // 扩展堆空间，分配新的块
 static struct block *extend_heap(struct block *last, size_t size) {
     struct block *block;
+#if defined(__cplusplus)
+    // C 里 void* 能隐式转成对象指针，C++ 不行（invalid conversion from 'void*' to 'block*'）。
+    // 这个演示被 cmake/cpp98 当成 .cpp 编译，所以 C++ 下必须显式转换；原来的写法在 C 下保留。
+    block = (struct block *)sbrk(0);
+#else
     block = sbrk(0);
+#endif
     void *request = sbrk(size + BLOCK_SIZE);
     if (request == (void*) -1) {
         return NULL;  // sbrk 失败
